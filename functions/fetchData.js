@@ -27,19 +27,14 @@ module.exports = async () => {
     const responseGenresTvShow = await axios(
       axiosConfig("GET", urlGenresTvShow)
     );
-    // console.log({
-    //   ...JSON.parse(responseData.data),
-    //   genresMovie: JSON.parse(responseGenresMovie.data.genres),
-    //   genresTv: JSON.parse(responseGenresTvShow.data.genres),
-    // });
-
-    return JSON.parse(responseData.data);
-
-    // return {
-    //   ...JSON.parse(responseData.data),
-    //   genresMovie: JSON.parse(responseGenresMovie.data.genres),
-    //   genresTv: JSON.parse(responseGenresTvShow.data.genres),
-    // };
+    /**
+     * @desc creates obj with all the data in it
+     */
+    return {
+      ...JSON.parse(responseData.data),
+      genresMovie: JSON.parse(responseGenresMovie.data).genres,
+      genresTv: JSON.parse(responseGenresTvShow.data).genres,
+    };
   } catch (error) {
     console.log(error);
     console.log(error.response.status, error.response.statusText);
