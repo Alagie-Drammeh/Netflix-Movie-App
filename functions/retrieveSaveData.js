@@ -9,7 +9,12 @@ module.exports = () => {
    * @requires array
    */
 
-  deleteCollection(["movies", "tvshows"]).then((res) => {
+  deleteCollection([
+    "movies",
+    "tvshows",
+    "genres_movies",
+    "genres_tvshows",
+  ]).then((res) => {
     console.log("Deleting old data...");
     if (res) {
       console.log("Fetching data...");

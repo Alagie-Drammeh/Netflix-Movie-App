@@ -21,7 +21,7 @@ const GenreTvSchema = require("../models/GenreTvSchema");
  *         description: i.e. `/?random` returns random item
  *       - in: query
  *         name: genres
- *         description: i.e. `genres` returns all the genres. `genres=Crime` returns a specific one.
+ *         description: i.e. `genres` returns all the genres. `genres=Crime` returns the items of the specific one.
  *     responses:
  *       200:
  *         description: TvShows, see the object examples bellow.
@@ -82,15 +82,44 @@ const GenreTvSchema = require("../models/GenreTvSchema");
  *                   items:
  *                     type: object
  *                     properties:
- *                        _id:
+ *                        backdrop_path:
  *                          type: string
- *                          example: "60dde4cf770e2b33d4d635a8"
+ *                          example: "/620hnMVLu6RSZW6a5rwO8gqpt0t.jpg"
+ *                        first_air_date:
+ *                          type: data
+ *                          example: "2021-06-17"
+ *                        genre_ids:
+ *                          type: array
+ *                          example: [16, 35, 10751, 14]
  *                        id:
  *                          type: number
- *                          example: 53
+ *                          example: 508943
  *                        name:
  *                          type: string
- *                          example: "Thriller"
+ *                        origin_country:
+ *                          type: array
+ *                          example: ["US"]
+ *                        original_language:
+ *                          type: string
+ *                          example: "en"
+ *                        original_name:
+ *                          type: string
+ *                          example: "Original Name"
+ *                        overview:
+ *                          type: string
+ *                          example: "Bla bla bla..."
+ *                        popularity:
+ *                          type: number
+ *                          example: 555.90
+ *                        poster_path:
+ *                          type: string
+ *                          example: "/jTswp6KyDYKtvC52GbHagrZbGvD.jpg"
+ *                        vote_average:
+ *                          type: number
+ *                          example: 55.9
+ *                        vote_count:
+ *                          type: number
+ *                          example: 2300
  */
 
 exports.get = async (req, res, next) => {
@@ -122,7 +151,13 @@ exports.get = async (req, res, next) => {
         });
       }
 
-      return res.json({ success: true, data: items, status: 200 });
+      // get id from item
+      const getId = items[0].id;
+
+      // find items
+      const findItemsGenre = await TvSchema.find({ genre_ids: getId });
+      // return items
+      return res.json({ success: true, data: findItemsGenre, status: 200 });
     }
 
     /**

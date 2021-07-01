@@ -44,14 +44,13 @@ const PORT = process.env.PORT;
 
 connectDB().then((res) => {
   if (res.connected) {
-    // new CronJob(
-    //   "00 30 11 * * 1-5",
-    //   () => retrieveSaveData(),
-    //   null,
-    //   true,
-    //   "America/Los_Angeles"
-    // );
-    retrieveSaveData();
+    new CronJob(
+      "00 30 11 * * 1-5",
+      () => retrieveSaveData(),
+      null,
+      true,
+      "America/Los_Angeles"
+    );
     return console.log(`MongoDB connected...`);
   }
 

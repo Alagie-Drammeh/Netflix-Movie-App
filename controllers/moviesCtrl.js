@@ -21,7 +21,7 @@ const GenreMovieSchema = require("../models/GenreMovieSchema");
  *         description: i.e. `/?random` returns random item
  *       - in: query
  *         name: genres
- *         description: i.e. `genres` returns all the genres. `genres=Thriller` returns a specific one.
+ *         description: i.e. `genres` returns all the genres. `genres=Thriller` returns the items of the specific one.
  *     responses:
  *       200:
  *         description: Movie, see the object examples bellow.
@@ -87,15 +87,49 @@ const GenreMovieSchema = require("../models/GenreMovieSchema");
  *                   items:
  *                     type: object
  *                     properties:
- *                        _id:
+ *                        adult:
+ *                          type: boolean
+ *                          description: Boolean Value
+ *                          example: false
+ *                        backdrop_path:
  *                          type: string
- *                          example: "60dde4cf770e2b33d4d635a8"
+ *                          example: "/620hnMVLu6RSZW6a5rwO8gqpt0t.jpg"
+ *                        genre_ids:
+ *                          type: array
+ *                          example: [16, 35, 10751, 14]
  *                        id:
  *                          type: number
- *                          example: 53
- *                        name:
+ *                          example: 508943
+ *                        original_language:
  *                          type: string
- *                          example: "Thriller"
+ *                          example: "en"
+ *                        original_title:
+ *                          type: string
+ *                          example: "Original Title"
+ *                        overview:
+ *                          type: string
+ *                          example: "Bla bla bla..."
+ *                        popularity:
+ *                          type: number
+ *                          example: 508943.609
+ *                        poster_path:
+ *                          type: string
+ *                          example: "/jTswp6KyDYKtvC52GbHagrZbGvD.jpg"
+ *                        release_date:
+ *                          type: data
+ *                          example: "2021-06-17"
+ *                        title:
+ *                          type: string
+ *                          example: "Title"
+ *                        video:
+ *                          type: string
+ *                          example: false
+ *                        vote_average:
+ *                          type: number
+ *                          example: 9.8
+ *                        vote_count:
+ *                          type: number
+ *                          example: 2300
  */
 
 exports.get = async (req, res, next) => {
@@ -126,7 +160,13 @@ exports.get = async (req, res, next) => {
         });
       }
 
-      return res.json({ success: true, data: items, status: 200 });
+      // get id from item
+      const getId = items[0].id;
+
+      // find items
+      const findItemsGenre = await MovieSchema.find({ genre_ids: getId });
+      // return items
+      return res.json({ success: true, data: findItemsGenre, status: 200 });
     }
 
     /**
