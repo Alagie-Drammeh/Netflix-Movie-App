@@ -3,7 +3,6 @@
  */
 
 const axios = require("axios");
-const swaggerJSDoc = require("swagger-jsdoc");
 
 const axiosConfig = require("../functions/axiosConfig");
 
