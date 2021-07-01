@@ -1,11 +1,15 @@
 /**
  * @desc function that saves the retrived data from fetchData() on mongo
+ * creates the genres present in the downloaded data and saves in mongo
  */
 
 const MovieSchema = require("../models/MovieSchema");
 const TvSchema = require("../models/TvSchema");
+const GenreMovieSchema = require("../models/GenreMovieSchema");
+const GenreTvSchema = require("../models/GenreTvSchema");
 
 const filterGenres = require("./filterGenres");
+const saveDataMongo = require("./saveDataMongo");
 
 module.exports = async (data) => {
   /**
@@ -14,47 +18,34 @@ module.exports = async (data) => {
   if (!data.success) return console.log("Error fetching data!");
 
   /**
+   * @desc gets the arrays with the AVAILABLE genres in Mongo
    * @function filterGenres
    * @requires arrAllItems
    * @requires arrAllGenres
    */
 
-  filterGenres(data.dataMovie.results, data.genresMovie);
-  filterGenres(data.dataTv.results, data.genresTv);
+  const arrMoviesGenres = filterGenres(
+    data.dataMovie.results,
+    data.genresMovie
+  );
+  const arrTvShowsGenres = filterGenres(data.dataTv.results, data.genresTv);
+
+  const moviesGenres = saveDataMongo(arrMoviesGenres, GenreMovieSchema);
+  const tvShowsGenres = saveDataMongo(arrTvShowsGenres, GenreTvSchema);
 
   /**
    * @desc maps and saves Movies into Mongo
    */
 
-  const promisesMovies = data.dataMovie.results.map((x) => {
-    const item = new MovieSchema(x);
-
-    item.save();
-
-    if (item._id === null) return console.log("Error on saving in mongo");
-    return item;
-  });
-
-  const responsesMovies = await Promise.all(promisesMovies);
-
+  const movies = saveDataMongo(data.dataMovie.results, MovieSchema);
   /**
    * @desc maps and saves TvShows
    */
-
-  const promisesTvShows = data.dataTv.results.map((x) => {
-    const item = new TvSchema(x);
-
-    item.save();
-
-    if (item._id === null) return console.log("Error on saving in mongo");
-
-    return item;
-  });
-
-  const responsesTvShows = await Promise.all(promisesTvShows);
+  const tvShows = saveDataMongo(data.dataTv.results, TvSchema);
 
   /**
    * @desc return responses
    */
-  return { responsesMovies, responsesTvShows };
+
+  return { movies, tvShows, moviesGenres, tvShowsGenres };
 };
