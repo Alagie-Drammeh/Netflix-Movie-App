@@ -5,6 +5,8 @@
 const MovieSchema = require("../models/MovieSchema");
 const TvSchema = require("../models/TvSchema");
 
+const filterGenres = require("./filterGenres");
+
 module.exports = async (data) => {
   /**
    * @desc if doesn't work
@@ -12,47 +14,13 @@ module.exports = async (data) => {
   if (!data.success) return console.log("Error fetching data!");
 
   /**
-   * @desc extract genres
-   */
-  const arrMoviesGenres = [];
-  data.dataMovie.results.map((x, i) => {
-    return arrMoviesGenres.push(x.genre_ids);
-  });
-
-  const arrTvGenres = [];
-  data.dataTv.results.map((x, i) => {
-    return arrTvGenres.push(x.genre_ids);
-  });
-
-  /**
-   * @desc creates unique arrays
+   * @function filterGenres
+   * @requires arrAllItems
+   * @requires arrAllGenres
    */
 
-  const arrMoviesGenresFinal = [...new Set(arrMoviesGenres.flat())];
-  const arrTvGenresFinal = [...new Set(arrTvGenres.flat())];
-
-  /**
-   * @desc filters and create an array with the existing genres
-   */
-  const filterGenresMovie = [];
-
-  data.genresMovie.map((x, i) => {
-    for (let i = 0; i < arrMoviesGenresFinal.length; i++) {
-      if (x.id === arrMoviesGenresFinal[i]) {
-        filterGenresMovie.push(x);
-      }
-    }
-  });
-
-  const filterGenresTv = [];
-
-  data.genresTv.map((x, i) => {
-    for (let i = 0; i < arrTvGenresFinal.length; i++) {
-      if (x.id === arrTvGenresFinal[i]) {
-        filterGenresTv.push(x);
-      }
-    }
-  });
+  filterGenres(data.dataMovie.results, data.genresMovie);
+  filterGenres(data.dataTv.results, data.genresTv);
 
   /**
    * @desc maps and saves Movies into Mongo
