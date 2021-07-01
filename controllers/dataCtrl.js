@@ -23,7 +23,7 @@ const urlTv = `https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}&languag
  * /api/data:
  *   get:
  *     summary: Retrieve the most popular Movies and TvShow from The Movie Database API.
- *     description: Retrieve a list of users from JSONPlaceholder. Can be used to populate a list of fake users when prototyping or testing an API.
+ *     description: Retrieve all the data to be saved in MongoDB, returns an object with two arrays `dataMovie` and `dataTv`.
  *     responses:
  *       200:
  *         description: Movie and TvShows, see the object examples bellow.
