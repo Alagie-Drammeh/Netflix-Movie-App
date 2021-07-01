@@ -3,19 +3,43 @@
  * @returns data
  */
 const axios = require("axios");
+const axiosConfig = require("./axiosConfig");
 
 const urlGet = `http://localhost:5000/api/data`;
 
-const axiosConfig = require("./axiosConfig");
+/**
+ * @desc data to retrieves genres
+ */
+const language = "en-US";
+const apiKey = process.env.API_KEY;
+
+const urlGenresMovie = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=${language}`;
+const urlGenresTvShow = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=${language}`;
 
 module.exports = async () => {
   try {
     /**
      * @desc double request for Movie / TV
      */
-    const response = await axios(axiosConfig("GET", urlGet));
+    const responseData = await axios(axiosConfig("GET", urlGet));
 
-    return JSON.parse(response.data);
+    const responseGenresMovie = await axios(axiosConfig("GET", urlGenresMovie));
+    const responseGenresTvShow = await axios(
+      axiosConfig("GET", urlGenresTvShow)
+    );
+    // console.log({
+    //   ...JSON.parse(responseData.data),
+    //   genresMovie: JSON.parse(responseGenresMovie.data.genres),
+    //   genresTv: JSON.parse(responseGenresTvShow.data.genres),
+    // });
+
+    return JSON.parse(responseData.data);
+
+    // return {
+    //   ...JSON.parse(responseData.data),
+    //   genresMovie: JSON.parse(responseGenresMovie.data.genres),
+    //   genresTv: JSON.parse(responseGenresTvShow.data.genres),
+    // };
   } catch (error) {
     console.log(error);
     console.log(error.response.status, error.response.statusText);

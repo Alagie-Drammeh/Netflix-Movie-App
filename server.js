@@ -10,11 +10,10 @@ const createError = require("http-errors");
 
 /**
  * @desc Set API Specification
+ * edit info in ./functions/swagger.js
  */
 
 const swaggerUi = require("swagger-ui-express");
-
-// custom info for swagger
 const swaggerSpec = require("./functions/swagger");
 
 /**
@@ -45,14 +44,14 @@ const PORT = process.env.PORT;
 
 connectDB().then((res) => {
   if (res.connected) {
-    new CronJob(
-      "00 30 11 * * 1-5",
-      () => retrieveSaveData(),
-      null,
-      true,
-      "America/Los_Angeles"
-    );
-
+    // new CronJob(
+    //   "00 30 11 * * 1-5",
+    //   () => retrieveSaveData(),
+    //   null,
+    //   true,
+    //   "America/Los_Angeles"
+    // );
+    retrieveSaveData();
     return console.log(`MongoDB connected...`);
   }
 
@@ -70,6 +69,7 @@ app.use("/api/data", require("./routes/data"));
  * @desc returns movies
  * @default route returns all movies (ordered by popularity)
  * @query ?random returns a random item
+ * @query ?genres returns a random item
  */
 app.use("/api/movies", require("./routes/movies"));
 
@@ -77,14 +77,27 @@ app.use("/api/movies", require("./routes/movies"));
  * @desc returns tvshows
  * @default route returns all tvshows (ordered by popularity)
  * @query ?random returns a random item
+ * @query ?genres returns a random item
  */
 app.use("/api/tvshows", require("./routes/tvshows"));
+
+// /**
+//  * @desc returns movies genres
+//  * @default route returns all movies genres
+//  */
+// app.use("/api/movies-genres", require("./routes/movies-genres"));
+
+// /**
+//  * @desc returns tvshows genres
+//  * @default route returns all tvshows genres
+//  */
+// app.use("/api/tvshows-genres", require("./routes/tvshows-genres"));
 
 /**
  * @desc search items
  * @query ?search= returns search item from both collections (databases)
  */
-app.use("/api/all", require("./routes/all")); //
+app.use("/api/all", require("./routes/all"));
 
 /**
  * @desc Swagger UI

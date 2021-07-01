@@ -2,23 +2,21 @@
  * @desc function that saves the retrived data from fetchData() on mongo
  */
 
-/**
- * @function deleteCollection
- * @requires collectionName
- */
-
 const MovieSchema = require("../models/MovieSchema");
 const TvSchema = require("../models/TvSchema");
 
 module.exports = async (data) => {
-  /**
-   * @desc if doesn't work
-   */
-  if (!data.success) return console.log("Error fetching data!");
+  console.log("save");
+  console.log(data);
 
-  /**
-   * @desc maps and saves Movies into Mongo
-   */
+  // /**
+  //  * @desc if doesn't work
+  //  */
+  // if (!data.success) return console.log("Error fetching data!");
+
+  // /**
+  //  * @desc maps and saves Movies into Mongo
+  //  */
 
   const promisesMovies = data.dataMovie.results.map((x) => {
     const item = new MovieSchema(x);
@@ -30,6 +28,8 @@ module.exports = async (data) => {
   });
 
   const responsesMovies = await Promise.all(promisesMovies);
+
+  console.log(responsesMovies);
 
   /**
    * @desc maps and saves TvShows

@@ -128,10 +128,22 @@ exports.get = async (req, res, next) => {
     const items = await MovieSchema.find({});
 
     /**
-     * @desc checks if a query is called
+     * @desc checks if a search is called
      */
 
+    if (req.query.hasOwnProperty("search")) {
+      console.log(req.query);
+      const items = await MovieSchema.find({});
+    }
+
+    /**
+     * @desc checks if random is called
+     */
     if (req.url === "/?random") {
+      /**
+       * @desc checks if a query is called
+       */
+
       // find random item
       const randomItem = items[Math.floor(Math.random() * items.length)];
 
