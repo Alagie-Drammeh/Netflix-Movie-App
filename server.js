@@ -10,50 +10,22 @@ const createError = require("http-errors");
 
 /**
  * @desc Set API Specification
- * @todo create ext component
  */
 
-const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-const swaggerDefinition = {
-  openapi: "3.0.0",
-  info: {
-    title: "API For the Project Netflix-Movie-App",
-    version: "1.0.0",
-    description:
-      "This is a REST API application made with Express. It retrieves data from The Movie Database API.",
-    license: {
-      name: "Licensed Under MIT",
-      url: "https://spdx.org/licenses/MIT.html",
-    },
-    contact: {
-      name: "The Movie Database",
-      url: "https://developers.themoviedb.org/",
-    },
-  },
-  servers: [
-    {
-      url: "http://localhost:5000",
-      description: "Development server",
-    },
-  ],
-};
-
-const options = {
-  swaggerDefinition,
-  // Paths to files containing OpenAPI definitions
-  apis: ["./controllers/*.js"],
-};
-
-const swaggerSpec = swaggerJSDoc(options);
+// custom info for swagger
+const swaggerSpec = require("./functions/swagger");
 
 /**
  * @desc Import functions
  */
-const fetchData = require("./functions/fetchData");
-const saveData = require("./functions/saveData");
-const deleteCollection = require("./functions/deleteDataColl");
+
+const retrieveSaveData = require("./functions/retrieveSaveData");
+
+/**
+ * @desc Assign express
+ */
 
 const app = express();
 
@@ -67,58 +39,21 @@ const PORT = process.env.PORT;
 
 /**
  * @desc MongoDB connect
- * @fires CronJob to call the db everyday
+ * @fires CronJob to call the db mon_to_fri_at_11_30
  * it waits mongo to be connected
  */
 
 connectDB().then((res) => {
   if (res.connected) {
-    // var job = new CronJob(
-    // new CronJob(
-    //   "*/03 */10 * * * *",
-    //   //   "*/02 * * * * *",
-    //   //   fetchData,
-    //   //   fetchData().then((res) => console.log(res));
-    //   () => console.log("Fetching"),
-    //   null,
-    //   true,
-    //   "America/Los_Angeles"
-    // );
-
-    /**
-     * @desc DISABLED
-     */
-
-    /**
-     * @desc first delete collection
-     * @function deleteCollection
-     * @requires array
-     */
-    // deleteCollection(["movies", "tvshows"]).then((res) => {
-    //   console.log("Deleting old data...");
-    //   if (res) {
-    //     console.log("Fetching data...");
-    //     /**
-    //      * @desc fetch data
-    //      */
-    //     return fetchData().then((res) => {
-    //       console.log("Saving data...");
-    //       /**
-    //        * @desc save data
-    //        */
-    //       saveData(res);
-    //     });
-    //   }
-
-    //   return console.log("Mongo Error!");
-    // });
-
-    /**
-     * @desc DISABLED
-     */
+    new CronJob(
+      "00 30 11 * * 1-5",
+      () => retrieveSaveData(),
+      null,
+      true,
+      "America/Los_Angeles"
+    );
 
     return console.log(`MongoDB connected...`);
-    //   .then((res) => console.log(res));
   }
 
   return console.log(`MongoDB NOT connected!`);
@@ -151,9 +86,6 @@ app.use("/api/tvshows", require("./routes/tvshows"));
  */
 app.use("/api/all", require("./routes/all")); //
 
-// app.use("/auth", require("")) // user authentication
-// app.use("/users", require("")) // user sign up
-
 /**
  * @desc Swagger UI
  */
@@ -168,8 +100,6 @@ app.use((req, res, next) => {
   return res.status(404).send({ message: "not a valid route" });
 });
 
-// job.start();
-// job.onComplete();
 /**
  * @desc Global error handler middleware
  */

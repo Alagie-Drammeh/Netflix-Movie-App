@@ -18,11 +18,14 @@ const urlMovies = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&
 const urlTv = `https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}&language=${language}&page=${pages}`;
 
 /**
+ * @desc swagger docs
+ */
+/**
  * @swagger
  * /api/data:
  *   get:
  *     summary: Retrieve the most popular Movies and TvShow from The Movie Database API.
- *     description: Retrieve all the data to be saved in MongoDB, returns an object with two arrays `dataMovie` and `dataTv`.
+ *     description: Is used by the server to retrive and save the data, returns an object with two arrays `dataMovie` and `dataTv`.
  *     responses:
  *       200:
  *         description: Movie and TvShows, see the object examples bellow.

@@ -5,11 +5,15 @@
 const TvSchema = require("../models/TvSchema");
 
 /**
+ * @desc swagger docs
+ */
+
+/**
  * @swagger
  * /api/tvshows:
  *   get:
  *     summary: Retrieve all the TvShows from MongoDB, query `/?random` optional returns random item.
- *     description: Default= returns obj with array `data` with all the TvShows. Optional param `/?random` (i.e. `/api/movies/?random`) returns a random movie.
+ *     description: Default returns obj with array `data` with all the TvShows. Optional param `/?random` (i.e. `/api/movies/?random`) returns a random movie.
  *     parameters:
  *       - in: query
  *         name: random

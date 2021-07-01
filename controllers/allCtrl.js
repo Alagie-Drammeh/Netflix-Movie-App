@@ -6,10 +6,14 @@ const MovieSchema = require("../models/MovieSchema");
 const TvSchema = require("../models/TvSchema");
 
 /**
+ * @desc swagger docs
+ */
+
+/**
  * @swagger
  * /api/all:
  *   get:
- *     summary: Retrieve all data stored from MongoDB, query `?search=` optional returns searched items.
+ *     summary: Retrieve all data stored in MongoDB, query `?search=` optional returns searched items.
  *     description: Default= returns obj with array `data` with all the movies and tv shows. Optional param `/?search=` (i.e. `/api/all?search=`) returns searched items.
  *     parameters:
  *       - in: query

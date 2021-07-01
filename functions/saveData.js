@@ -1,5 +1,5 @@
 /**
- * @desc funciton that saves the retrived data from fetchData() on mongo
+ * @desc function that saves the retrived data from fetchData() on mongo
  */
 
 /**
@@ -17,7 +17,7 @@ module.exports = async (data) => {
   if (!data.success) return console.log("Error fetching data!");
 
   /**
-   * @desc maps and saves Movies
+   * @desc maps and saves Movies into Mongo
    */
 
   const promisesMovies = data.dataMovie.results.map((x) => {
@@ -50,40 +50,5 @@ module.exports = async (data) => {
   /**
    * @desc return responses
    */
-
   return { responsesMovies, responsesTvShows };
-  //   return responsesMovies;
-
-  //   try {
-  //     let album = await MovieSchema.findOne({ albumCode });
-
-  //     if (album) {
-  //       await deleteSchema(userCode);
-  //       return next({
-  //         message: "Album already exist!",
-  //         status: 400,
-  //       });
-  //     }
-
-  //     album = new SpotifyAlbum({
-  //       albumCode,
-  //       albumGenres,
-  //     });
-
-  //     const resAlbum = await album.save();
-
-  //     // deletes schema with find schema function
-  //     await deleteSchema(userCode);
-
-  //     // send just created id back
-  //     return { success: true, data: res.json(resAlbum).statusCode };
-  //   } catch (error) {
-  //     console.log(error);
-  //     console.log(error.response.status, error.response.statusText);
-
-  //     return next({
-  //       message: error.response.statusText,
-  //       status: error.response.status,
-  //     });
-  //   }
 };

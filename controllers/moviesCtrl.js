@@ -5,11 +5,15 @@
 const MovieSchema = require("../models/MovieSchema");
 
 /**
+ * @desc swagger docs
+ */
+
+/**
  * @swagger
  * /api/movies:
  *   get:
  *     summary: Retrieve all the Movies from MongoDB, query `/?random` optional returns random item.
- *     description: Default= returns obj with array `data` with all the movies. Optional param `/?random` (i.e. `/api/movies/?random`) returns a random movie.
+ *     description: Default returns obj with array `data` with all the movies. Optional param `/?random` (i.e. `/api/movies/?random`) returns a random movie.
  *     parameters:
  *       - in: query
  *         name: random

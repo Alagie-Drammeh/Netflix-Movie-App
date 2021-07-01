@@ -6,7 +6,6 @@ module.exports = (method, url) => {
     method: method,
     headers: {
       "Content-Type": "application/json",
-      //   Authorization: `Bearer ${spotifyToken}`,
     },
     url: url,
     transformResponse: [

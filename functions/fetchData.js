@@ -6,25 +6,7 @@ const axios = require("axios");
 
 const urlGet = `http://localhost:5000/api/data`;
 
-/**
- * @desc axios global config
- */
-const axiosConfig = (method, url) => {
-  const obj = {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
-      //   Authorization: `Bearer ${spotifyToken}`,
-    },
-    url: url,
-    transformResponse: [
-      (data) => {
-        return data;
-      },
-    ],
-  };
-  return obj;
-};
+const axiosConfig = require("./axiosConfig");
 
 module.exports = async () => {
   try {
