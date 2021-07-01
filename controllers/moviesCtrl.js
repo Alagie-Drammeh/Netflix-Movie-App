@@ -13,12 +13,15 @@ const GenreMovieSchema = require("../models/GenreMovieSchema");
  * @swagger
  * /api/movies:
  *   get:
- *     summary: Retrieve all the Movies from MongoDB, query `/?random` optional returns random item.
- *     description: Default returns obj with array `data` with all the movies. Optional param `/?random` (i.e. `/api/movies/?random`) returns a random movie.
+ *     summary: Retrieve all the Movies from MongoDB, optionals queries `/?random`, `genres`.
+ *     description: Default returns obj with array `data` with all the movies. Optional param `/?random` (i.e. `/api/movies/?random`) returns a random movie, and `genres=` returns the genres avaible in Mongo.
  *     parameters:
  *       - in: query
  *         name: random
  *         description: i.e. `/?random` returns random item
+ *       - in: query
+ *         name: genres
+ *         description: i.e. `genres` returns all the genres. `genres=Thriller` returns a specific one.
  *     responses:
  *       200:
  *         description: Movie, see the object examples bellow.
@@ -75,7 +78,7 @@ const GenreMovieSchema = require("../models/GenreMovieSchema");
  *                        vote_count:
  *                          type: number
  *                          example: 2300
- *           Tv Show Object- application/json:
+ *           Genres Object - application/json:
  *             schema:
  *               type: object
  *               properties:
@@ -84,44 +87,15 @@ const GenreMovieSchema = require("../models/GenreMovieSchema");
  *                   items:
  *                     type: object
  *                     properties:
- *                        backdrop_path:
+ *                        _id:
  *                          type: string
- *                          example: "/620hnMVLu6RSZW6a5rwO8gqpt0t.jpg"
- *                        first_air_date:
- *                          type: data
- *                          example: "2021-06-17"
- *                        genre_ids:
- *                          type: array
- *                          example: [16, 35, 10751, 14]
+ *                          example: "60dde4cf770e2b33d4d635a8"
  *                        id:
  *                          type: number
- *                          example: 508943
+ *                          example: 53
  *                        name:
  *                          type: string
- *                        origin_country:
- *                          type: array
- *                          example: ["US"]
- *                        original_language:
- *                          type: string
- *                          example: "en"
- *                        original_name:
- *                          type: string
- *                          example: "Original Name"
- *                        overview:
- *                          type: string
- *                          example: "Bla bla bla..."
- *                        popularity:
- *                          type: number
- *                          example: 555.90
- *                        poster_path:
- *                          type: string
- *                          example: "/jTswp6KyDYKtvC52GbHagrZbGvD.jpg"
- *                        vote_average:
- *                          type: number
- *                          example: 55.9
- *                        vote_count:
- *                          type: number
- *                          example: 2300
+ *                          example: "Thriller"
  */
 
 exports.get = async (req, res, next) => {

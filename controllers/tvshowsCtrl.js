@@ -19,6 +19,9 @@ const GenreTvSchema = require("../models/GenreTvSchema");
  *       - in: query
  *         name: random
  *         description: i.e. `/?random` returns random item
+ *       - in: query
+ *         name: genres
+ *         description: i.e. `genres` returns all the genres. `genres=Crime` returns a specific one.
  *     responses:
  *       200:
  *         description: TvShows, see the object examples bellow.
@@ -70,6 +73,24 @@ const GenreTvSchema = require("../models/GenreTvSchema");
  *                        vote_count:
  *                          type: number
  *                          example: 2300
+ *           Genres Object - application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                        _id:
+ *                          type: string
+ *                          example: "60dde4cf770e2b33d4d635a8"
+ *                        id:
+ *                          type: number
+ *                          example: 53
+ *                        name:
+ *                          type: string
+ *                          example: "Thriller"
  */
 
 exports.get = async (req, res, next) => {
