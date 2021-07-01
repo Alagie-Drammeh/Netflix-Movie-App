@@ -9,6 +9,46 @@ const connectDB = require("./config/db");
 const createError = require("http-errors");
 
 /**
+ * @desc Set API Specification
+ * @todo create ext component
+ */
+
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+const swaggerDefinition = {
+  openapi: "3.0.0",
+  info: {
+    title: "API For the Project Netflix-Movie-App",
+    version: "1.0.0",
+    description:
+      "This is a REST API application made with Express. It retrieves data from The Movie Database API.",
+    license: {
+      name: "Licensed Under MIT",
+      url: "https://spdx.org/licenses/MIT.html",
+    },
+    contact: {
+      name: "The Movie Database",
+      url: "https://developers.themoviedb.org/",
+    },
+  },
+  servers: [
+    {
+      url: "http://localhost:5000",
+      description: "Development server",
+    },
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  // Paths to files containing OpenAPI definitions
+  apis: ["./controllers/*.js"],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+/**
  * @desc Import functions
  */
 const fetchData = require("./functions/fetchData");
@@ -113,6 +153,12 @@ app.use("/api/all", require("./routes/all")); //
 
 // app.use("/auth", require("")) // user authentication
 // app.use("/users", require("")) // user sign up
+
+/**
+ * @desc Swagger UI
+ */
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /**
  * @desc 404 not found
