@@ -3,6 +3,7 @@
  */
 
 const MovieSchema = require("../models/MovieSchema");
+const GenreMovieSchema = require("../models/GenreMovieSchema");
 
 /**
  * @desc swagger docs
@@ -131,9 +132,27 @@ exports.get = async (req, res, next) => {
      * @desc checks if a search is called
      */
 
-    if (req.query.hasOwnProperty("search")) {
-      console.log(req.query);
-      const items = await MovieSchema.find({});
+    if (req.query.hasOwnProperty("genres")) {
+      // if not specified returns all
+      if (req.query.genres.length === 0) {
+        const items = await GenreMovieSchema.find({});
+        return res.json({ success: true, data: items, status: 200 });
+      }
+
+      terms = req.query.genres;
+      const re = new RegExp(terms, "i");
+      const items = await GenreMovieSchema.find({ name: re });
+
+      // returns 404 if not found
+      if (items.length === 0) {
+        return next({
+          success: false,
+          message: "Requested data does not exist",
+          status: 404,
+        });
+      }
+
+      return res.json({ success: true, data: items, status: 200 });
     }
 
     /**

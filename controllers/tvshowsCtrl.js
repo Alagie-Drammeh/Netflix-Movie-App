@@ -3,6 +3,7 @@
  */
 
 const TvSchema = require("../models/TvSchema");
+const GenreTvSchema = require("../models/GenreTvSchema");
 
 /**
  * @desc swagger docs
@@ -74,6 +75,35 @@ const TvSchema = require("../models/TvSchema");
 exports.get = async (req, res, next) => {
   try {
     const items = await TvSchema.find({});
+
+    /**
+     * @desc checks if a search is called
+     */
+
+    if (req.query.hasOwnProperty("genres")) {
+      // if not specified returns all
+      if (req.query.genres.length === 0) {
+        const items = await GenreTvSchema.find({});
+        return res.json({ success: true, data: items, status: 200 });
+      }
+
+      terms = req.query.genres;
+      const re = new RegExp(terms, "i");
+      const items = await GenreTvSchema.find({ name: re });
+
+      // returns 404 if not found
+
+      if (items.length === 0) {
+        return next({
+          success: false,
+          message: "Requested data does not exist",
+          status: 404,
+        });
+      }
+
+      return res.json({ success: true, data: items, status: 200 });
+    }
+
     /**
      * @desc checks if a query is called
      */
