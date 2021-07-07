@@ -51,6 +51,7 @@ connectDB().then((res) => {
       true,
       "America/Los_Angeles"
     );
+    // retrieveSaveData();
     return console.log(`MongoDB connected...`);
   }
 
@@ -79,18 +80,6 @@ app.use("/api/movies", require("./routes/movies"));
  * @query ?genres returns a random item
  */
 app.use("/api/tvshows", require("./routes/tvshows"));
-
-// /**
-//  * @desc returns movies genres
-//  * @default route returns all movies genres
-//  */
-// app.use("/api/movies-genres", require("./routes/movies-genres"));
-
-// /**
-//  * @desc returns tvshows genres
-//  * @default route returns all tvshows genres
-//  */
-// app.use("/api/tvshows-genres", require("./routes/tvshows-genres"));
 
 /**
  * @desc search items

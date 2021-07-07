@@ -5,6 +5,8 @@
 const TvSchema = require("../models/TvSchema");
 const GenreTvSchema = require("../models/GenreTvSchema");
 
+const shuffleArray = require("../functions/shuffleArray");
+
 /**
  * @desc swagger docs
  */
@@ -18,10 +20,19 @@ const GenreTvSchema = require("../models/GenreTvSchema");
  *     parameters:
  *       - in: query
  *         name: random
- *         description: i.e. `/?random` returns random item
+ *         example: 5
+ *         description: i.e. use just `random` to return ALL items in random order, or i.e. `5` to get 5 random items
  *       - in: query
  *         name: genres
- *         description: i.e. `genres` returns all the genres. `genres=Crime` returns the items of the specific one.
+ *         example: crime
+ *         description: i.e. `genres` returns all the genres. `genres=crime` returns the items of the specific one.
+ *       - in: query
+ *         name: items
+ *         example: 5
+ *         description: i.e. `items=5` returns 5 items. `genres=all` returns all the items.
+ *       - in: query
+ *         name: genres=crime&items=5
+ *         description: i.e. example how to 5 items of a genre, use random to get random items
  *     responses:
  *       200:
  *         description: TvShows, see the object examples bellow.
@@ -132,7 +143,7 @@ exports.get = async (req, res, next) => {
 
     if (req.query.hasOwnProperty("genres")) {
       // if not specified returns all
-      if (req.query.genres.length === 0) {
+      if (req.query.genres.length === 0 || req.query.genres === "all") {
         const items = await GenreTvSchema.find({});
         return res.json({ success: true, data: items, status: 200 });
       }
@@ -156,21 +167,79 @@ exports.get = async (req, res, next) => {
 
       // find items
       const findItemsGenre = await TvSchema.find({ genre_ids: getId });
+
+      /**
+       * @desc check if items and random are in the query
+       * @returns a randpm array of n° items
+       */
+      if (
+        req.query.hasOwnProperty("items") &&
+        Number(req.query.items) !== 0 &&
+        req.query.hasOwnProperty("random")
+      ) {
+        // shuffles array
+        const randomItems = shuffleArray(findItemsGenre);
+
+        const arrNumberOfItems = randomItems.splice(0, Number(req.query.items));
+        return res.json({ success: true, data: arrNumberOfItems, status: 200 });
+      }
+
+      /**
+       * @desc check if items is in the query
+       */
+      if (req.query.hasOwnProperty("items") && Number(req.query.items) !== 0) {
+        const arrNumberOfItems = findItemsGenre.splice(
+          0,
+          Number(req.query.items)
+        );
+        return res.json({ success: true, data: arrNumberOfItems, status: 200 });
+      }
+
       // return items
       return res.json({ success: true, data: findItemsGenre, status: 200 });
     }
 
     /**
-     * @desc checks if a query is called
+     * @desc checks if items param is called
      */
-    if (req.url === "/?random") {
-      // find random item
-      const randomItem = items[Math.floor(Math.random() * items.length)];
+    if (req.query.hasOwnProperty("items")) {
+      // if not specified or all returns all items
+      if (req.query.items.length === 0 || req.query.items === "all") {
+        return res.json({ success: true, data: items, status: 200 });
+      }
+      if (Number(req.query.items) !== 0) {
+        // creates array with the requested n° of items
+        const numberOfItems = items.splice(0, Number(req.query.items));
 
-      return res.json({ success: true, data: randomItem, status: 200 });
+        return res.json({ success: true, data: numberOfItems, status: 200 });
+      }
     }
 
-    return res.json({ success: true, data: items });
+    /**
+     * @desc checks if random param is called
+     */
+    if (req.query.hasOwnProperty("random")) {
+      // if no number specified or "all" is passed returns all the db randomized
+      if (req.query.random.length === 0 || req.query.random === "all") {
+        // shuffles array
+        const randomItems = shuffleArray(items);
+
+        return res.json({ success: true, data: randomItems, status: 200 });
+      }
+
+      // if a number is specified
+      if (Number(req.query.random) !== 0) {
+        // shuffles array
+        const randomItems = shuffleArray(items).splice(
+          0,
+          Number(req.query.random)
+        );
+
+        return res.json({ success: true, data: randomItems, status: 200 });
+      }
+    }
+    // renders if no query is passed
+    return res.json({ success: true, data: items, status: 200 });
   } catch (error) {
     return next({
       success: false,

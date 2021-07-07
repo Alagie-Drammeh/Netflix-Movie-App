@@ -9,13 +9,29 @@ const axiosConfig = require("../functions/axiosConfig");
 /**
  * @desc URLs
  */
+// pages to retrieve
+const numberOfPages = 100; // every page 20 elements
 
-const pages = 1;
 const language = "en-US";
 const apiKey = process.env.API_KEY;
 
-const urlMovies = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=${language}&page=${pages}`;
-const urlTv = `https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}&language=${language}&page=${pages}`;
+// basic url to fetch data
+const urlMovies = `https://api.themoviedb.org/3/movie/popular`;
+const urlTv = `https://api.themoviedb.org/3/tv/popular`;
+
+/**
+ * @desc creates URLs array
+ * @returns array with url to call with axios
+ * @requires url
+ */
+
+const createArrayUrls = (url) => {
+  let array = [];
+  for (let i = 1; i < numberOfPages; i++) {
+    array.push(`${url}?api_key=${apiKey}&language=${language}&page=${i}`);
+  }
+  return array;
+};
 
 /**
  * @desc swagger docs
@@ -136,13 +152,42 @@ exports.get = async (req, res, next) => {
     /**
      * @desc double request for Movie / TV
      */
-    const responseMovie = await axios(axiosConfig("GET", urlMovies));
-    const responseTv = await axios(axiosConfig("GET", urlTv));
+
+    // map  the arrUrlsMovies for multiple pages request
+    const responseMovie = createArrayUrls(urlMovies).map((x) => {
+      const response = axios(axiosConfig("GET", x));
+      return response;
+    });
+    let responses = [];
+    responses = await Promise.all(responseMovie);
+
+    // array of movies
+    const arrMovies = [];
+    // merge array of movies
+    responses.map((x) => {
+      arrMovies.push(...JSON.parse(x.data).results);
+    });
+
+    // map  the arrUrlsTv for multiple pages request
+    const responseTv = createArrayUrls(urlTv).map((x) => {
+      const response = axios(axiosConfig("GET", x));
+      return response;
+    });
+
+    responses = await Promise.all(responseTv);
+
+    // array of Tv shows
+    const arrTv = [];
+    // merge array of Tv shows
+    responses.map((x) => {
+      arrTv.push(...JSON.parse(x.data).results);
+    });
 
     return res.json({
       success: true,
-      dataMovie: JSON.parse(responseMovie.data),
-      dataTv: JSON.parse(responseTv.data),
+      dataMovie: arrMovies,
+      // dataMovie: JSON.parse(responseMovie.data),
+      dataTv: arrTv,
       status: 200,
     });
   } catch (error) {

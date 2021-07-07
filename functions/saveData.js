@@ -24,11 +24,8 @@ module.exports = async (data) => {
    * @requires arrAllGenres
    */
 
-  const arrMoviesGenres = filterGenres(
-    data.dataMovie.results,
-    data.genresMovie
-  );
-  const arrTvShowsGenres = filterGenres(data.dataTv.results, data.genresTv);
+  const arrMoviesGenres = filterGenres(data.dataMovie, data.genresMovie);
+  const arrTvShowsGenres = filterGenres(data.dataTv, data.genresTv);
 
   const moviesGenres = saveDataMongo(arrMoviesGenres, GenreMovieSchema);
   const tvShowsGenres = saveDataMongo(arrTvShowsGenres, GenreTvSchema);
@@ -37,11 +34,11 @@ module.exports = async (data) => {
    * @desc maps and saves Movies into Mongo
    */
 
-  const movies = saveDataMongo(data.dataMovie.results, MovieSchema);
+  const movies = saveDataMongo(data.dataMovie, MovieSchema);
   /**
    * @desc maps and saves TvShows
    */
-  const tvShows = saveDataMongo(data.dataTv.results, TvSchema);
+  const tvShows = saveDataMongo(data.dataTv, TvSchema);
 
   /**
    * @desc return responses
